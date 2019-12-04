@@ -215,8 +215,7 @@ def undoRetrain():
 def retrain():
     global graph, tokenizer, lstm_model, model_version
     K.clear_session()
-    #tf.reset_default_graph()
-    #graph = tf.get_default_graph()
+
     try:
         csv_data = None
         json_data = None
@@ -295,6 +294,7 @@ def getPrediction(examDescription="", OtherHX="", OtherSX="", OtherSX2="", indic
     #to_classify = examDescription + '. ' + OtherSX + '. ' + indicationDescription
     #to_classify = examDescription + '. ' + OtherHX + '. ' + OtherSX + '. ' + indicationDescription
     to_classify = OtherSX2
+    print(to_classify)
     to_classify = clean_text(to_classify)
     to_classify = pad_sequences(tokenizer.texts_to_sequences([to_classify]),maxlen=max_length)
     print(to_classify)
@@ -326,6 +326,7 @@ class PredictionForm(FlaskForm):
     examDescription = StringField('examDescription', validators=[Required()])
     OtherHX = StringField('OtherHX', validators=[Required()])
     OtherSX = StringField('OtherSX', validators=[Required()])
+    OtherSX2 = StringField('OtherSX2', validators=[Required()])
     indicationDescription = StringField('indicationDescription', validators=[Required()])
     #prediction = StringField('prediction', validators=[Required()])
     submit = SubmitField('Submit')
@@ -338,21 +339,23 @@ def index():
         old_examDescription = session.get('examDescription')
         old_OtherHX = session.get('OtherHX')
         old_OtherSX = session.get('OtherSX')
+        old_OtherSX2 = session.get('OtherSX2')
         old_indicationDescription = session.get('indicationDescription')
-        if (old_examDescription is not None and old_examDescription != form.examDescription.data) or (old_OtherSX is not None and old_OtherSX != form.OtherSX.data) or (old_indicationDescription is not None and old_indicationDescription != form.indicationDescription) or (old_OtherHX is not None and old_OtherHX != form.OtherHX.data) :
+        if (old_examDescription is not None and old_examDescription != form.examDescription.data) or (old_OtherSX2 is not None and old_OtherSX2 != form.OtherSX2.data) or (old_OtherSX is not None and old_OtherSX != form.OtherSX.data) or (old_indicationDescription is not None and old_indicationDescription != form.indicationDescription) or (old_OtherHX is not None and old_OtherHX != form.OtherHX.data) :
             flash('data has changed, predicting')
 
         session['examDescription'] = form.examDescription.data
         session['OtherHX'] = form.OtherHX.data
         session['OtherSX'] = form.OtherSX.data
+        session['OtherSX2'] = form.OtherSX2.data
         session['indicationDescription'] = form.indicationDescription.data
-        session['prediction'] = getPrediction(examDescription=form.examDescription.data,OtherHX=form.OtherHX.data,OtherSX=form.OtherSX.data,indicationDescription=form.indicationDescription.data)
+        session['prediction'] = getPrediction(examDescription=form.examDescription.data,OtherHX=form.OtherHX.data,OtherSX=form.OtherSX.data,OtherSX2=form.OtherSX2.data,indicationDescription=form.indicationDescription.data)
         #form.examDescription.data = ''
         #form.OtherSX.data = ''
         #form.indicationDescription.data = ''
         return redirect(url_for('index'))
     #return render_template('index.html', form=form, examDescription=session.get('examDescription'), OtherSX=session.get('OtherSX'), indicationDescription=session.get('indicationDescription'),prediction=session.get('prediction'))
-    return render_template('index.html', form=form, examDescription=session.get('examDescription'),OtherHX=session.get('OtherHX'),OtherSX=session.get('OtherSX'), indicationDescription=session.get('indicationDescription'),prediction=session.get('prediction'))
+    return render_template('index.html', form=form, examDescription=session.get('examDescription'),OtherHX=session.get('OtherHX'),OtherSX=session.get('OtherSX'), OtherSX2=session.get('OtherSX2'), indicationDescription=session.get('indicationDescription'),prediction=session.get('prediction'))
 
 if __name__ == "__main__":
     print(("* Loading Keras model and Flask starting server...please wait until server has fully started"))

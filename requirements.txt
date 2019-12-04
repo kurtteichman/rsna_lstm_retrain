@@ -58,7 +58,6 @@ pbr==4.2.0
 pexpect==4.6.0
 pickleshare==0.7.4
 Pillow==5.4.1
-pkg-resources==0.0.0
 plotly==3.2.1
 prometheus-client==0.3.1
 prompt-toolkit==1.0.15
@@ -85,7 +84,7 @@ SimpleITK==1.2.0
 six==1.11.0
 sklearn==0.0
 tensorboard==1.10.0
-tensorflow==1.11.0rc2
+tensorflow==1.13.1
 termcolor==1.1.0
 terminado==0.8.1
 testpath==0.3.1
